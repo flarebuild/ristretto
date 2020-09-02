@@ -120,7 +120,7 @@ func (sm *shardedMap) GetAll(includeExpired bool) []StoreItem {
 		dataLen :=  len(sm.shards[i].data)
 		sm.shards[i].RLock()
 		for si := uint64(0); i < uint64(dataLen); si++ {
-			if !includeExpired && sm.shards[i].data[si].expiration.After(time.Now()) {
+			if !includeExpired && sm.shards[i].data[si].expiration.Before(time.Now()) {
 				continue
 			}
 			items = append(items, sm.shards[i].data[si])
