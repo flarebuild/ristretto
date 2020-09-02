@@ -117,13 +117,12 @@ func (sm *shardedMap) Clear(onEvict itemCallback) {
 func (sm *shardedMap) GetAll(includeExpired bool) []StoreItem {
 	items := make([]StoreItem, 0)
 	for i := uint64(0); i < numShards; i++ {
-		dataLen :=  len(sm.shards[i].data)
 		sm.shards[i].RLock()
-		for si := uint64(0); i < uint64(dataLen); si++ {
-			if !includeExpired && sm.shards[i].data[si].expiration.Before(time.Now()) {
+		for _, v := range sm.shards[i].data {
+			if !includeExpired && v.expiration.Before(time.Now()) {
 				continue
 			}
-			items = append(items, sm.shards[i].data[si])
+			items = append(items, v)
 		}
 		sm.shards[i].RUnlock()
 	}
