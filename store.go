@@ -21,11 +21,10 @@ import (
 	"time"
 )
 
-// TODO: Do we need this to be a separate struct from Item?
-type storeItem struct {
-	key        uint64
+type StoreItem struct {
+	Key        uint64
 	conflict   uint64
-	value      interface{}
+	Value      interface{}
 	expiration time.Time
 }
 
@@ -53,6 +52,8 @@ type store interface {
 	Cleanup(policy policy, onEvict itemCallback)
 	// Clear clears all contents of the store.
 	Clear(onEvict itemCallback)
+	// Get all of the items from the cache (for analysis and debugging only!)
+	GetAll(includeExpired bool) []StoreItem
 }
 
 // newStore returns the default store implementation.
@@ -113,15 +114,31 @@ func (sm *shardedMap) Clear(onEvict itemCallback) {
 	}
 }
 
+func (sm *shardedMap) GetAll(includeExpired bool) []StoreItem {
+	items := make([]StoreItem, 0)
+	for i := uint64(0); i < numShards; i++ {
+		dataLen :=  len(sm.shards[i].data)
+		sm.shards[i].RLock()
+		for si := uint64(0); i < uint64(dataLen); si++ {
+			if !includeExpired && sm.shards[i].data[si].expiration.After(time.Now()) {
+				continue
+			}
+			items = append(items, sm.shards[i].data[si])
+		}
+		sm.shards[i].RUnlock()
+	}
+	return items
+}
+
 type lockedMap struct {
 	sync.RWMutex
-	data map[uint64]storeItem
+	data map[uint64]StoreItem
 	em   *expirationMap
 }
 
 func newLockedMap(em *expirationMap) *lockedMap {
 	return &lockedMap{
-		data: make(map[uint64]storeItem),
+		data: make(map[uint64]StoreItem),
 		em:   em,
 	}
 }
@@ -141,7 +158,7 @@ func (m *lockedMap) get(key, conflict uint64) (interface{}, bool) {
 	if !item.expiration.IsZero() && time.Now().After(item.expiration) {
 		return nil, false
 	}
-	return item.value, true
+	return item.Value, true
 }
 
 func (m *lockedMap) Expiration(key uint64) time.Time {
@@ -173,10 +190,10 @@ func (m *lockedMap) Set(i *Item) {
 		m.em.add(i.Key, i.Conflict, i.Expiration)
 	}
 
-	m.data[i.Key] = storeItem{
-		key:        i.Key,
+	m.data[i.Key] = StoreItem{
+		Key:        i.Key,
 		conflict:   i.Conflict,
-		value:      i.Value,
+		Value:      i.Value,
 		expiration: i.Expiration,
 	}
 }
@@ -199,7 +216,7 @@ func (m *lockedMap) Del(key, conflict uint64) (uint64, interface{}) {
 
 	delete(m.data, key)
 	m.Unlock()
-	return item.conflict, item.value
+	return item.conflict, item.Value
 }
 
 func (m *lockedMap) Update(newItem *Item) (interface{}, bool) {
@@ -215,15 +232,15 @@ func (m *lockedMap) Update(newItem *Item) (interface{}, bool) {
 	}
 
 	m.em.update(newItem.Key, newItem.Conflict, item.expiration, newItem.Expiration)
-	m.data[newItem.Key] = storeItem{
-		key:        newItem.Key,
+	m.data[newItem.Key] = StoreItem{
+		Key:        newItem.Key,
 		conflict:   newItem.Conflict,
-		value:      newItem.Value,
+		Value:      newItem.Value,
 		expiration: newItem.Expiration,
 	}
 
 	m.Unlock()
-	return item.value, true
+	return item.Value, true
 }
 
 func (m *lockedMap) Clear(onEvict itemCallback) {
@@ -231,12 +248,12 @@ func (m *lockedMap) Clear(onEvict itemCallback) {
 	i := &Item{}
 	if onEvict != nil {
 		for _, si := range m.data {
-			i.Key = si.key
+			i.Key = si.Key
 			i.Conflict = si.conflict
-			i.Value = si.value
+			i.Value = si.Value
 			onEvict(i)
 		}
 	}
-	m.data = make(map[uint64]storeItem)
+	m.data = make(map[uint64]StoreItem)
 	m.Unlock()
 }
