@@ -15,7 +15,7 @@ go_library(
         "z.go",
     ],
     cgo = True,
-    importpath = "github.com/dgraph-io/ristretto/z",
+    importpath = "github.com/flarebuild/ristretto/z",
     visibility = ["//visibility:public"],
     deps = ["@com_github_cespare_xxhash//:go_default_library"],
 )

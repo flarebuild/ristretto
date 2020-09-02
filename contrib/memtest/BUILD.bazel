@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "github.com/dgraph-io/ristretto/contrib/memtest",
+    importpath = "github.com/flarebuild/ristretto/contrib/memtest",
     visibility = ["//visibility:private"],
     deps = ["//z:go_default_library"],
 )

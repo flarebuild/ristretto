@@ -14,7 +14,7 @@ and this project will adhere to [Semantic Versioning](http://semver.org/spec/v2.
 
 ## [0.0.3] - 2020-07-06
 
-[0.0.3]: https://github.com/dgraph-io/ristretto/compare/v0.0.2..v0.0.3
+[0.0.3]: https://github.com/flarebuild/ristretto/compare/v0.0.2..v0.0.3
 
 ### Changed
 
@@ -30,7 +30,7 @@ and this project will adhere to [Semantic Versioning](http://semver.org/spec/v2.
 
 ## [0.0.2] - 2020-02-24
 
-[0.0.2]: https://github.com/dgraph-io/ristretto/compare/v0.0.1..v0.0.2
+[0.0.2]: https://github.com/flarebuild/ristretto/compare/v0.0.1..v0.0.2
 
 ### Added
 
@@ -43,11 +43,11 @@ and this project will adhere to [Semantic Versioning](http://semver.org/spec/v2.
 - Delete item immediately. ([#113][])
 - Remove key from policy after TTL eviction. ([#130][])
 
-[#111]: https://github.com/dgraph-io/ristretto/issues/111
-[#113]: https://github.com/dgraph-io/ristretto/issues/113
-[#119]: https://github.com/dgraph-io/ristretto/issues/119
-[#122]: https://github.com/dgraph-io/ristretto/issues/122
-[#130]: https://github.com/dgraph-io/ristretto/issues/130
+[#111]: https://github.com/flarebuild/ristretto/issues/111
+[#113]: https://github.com/flarebuild/ristretto/issues/113
+[#119]: https://github.com/flarebuild/ristretto/issues/119
+[#122]: https://github.com/flarebuild/ristretto/issues/122
+[#130]: https://github.com/flarebuild/ristretto/issues/130
 
 ## 0.0.1
 

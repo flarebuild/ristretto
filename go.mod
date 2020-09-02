@@ -1,4 +1,4 @@
-module github.com/dgraph-io/ristretto
+module github.com/flarebuild/ristretto
 
 go 1.12
 

@@ -1,7 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 load("@bazel_gazelle//:def.bzl", "gazelle")
 
-# gazelle:prefix github.com/dgraph-io/ristretto
+# gazelle:prefix github.com/flarebuild/ristretto
 
 gazelle(name = "gazelle")
 
@@ -15,7 +15,7 @@ go_library(
         "store.go",
         "ttl.go",
     ],
-    importpath = "github.com/dgraph-io/ristretto",
+    importpath = "github.com/flarebuild/ristretto",
     visibility = ["//visibility:public"],
     deps = ["//z:go_default_library"],
 )

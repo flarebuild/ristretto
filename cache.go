@@ -27,7 +27,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/dgraph-io/ristretto/z"
+	"github.com/flarebuild/ristretto/z"
 )
 
 var (
