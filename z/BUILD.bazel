@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "bbloom.go",
+        "buffer.go",
+        "calloc.go",
+        "calloc_32bit.go",
+        "calloc_64bit.go",
+        "calloc_nojemalloc.go",
+        "histogram.go",
+        "rtutil.go",
+        "rtutil.s",
+        "z.go",
+    ],
+    cgo = True,
+    importpath = "github.com/dgraph-io/ristretto/z",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_cespare_xxhash//:go_default_library"],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = [
+        "bbloom_test.go",
+        "buffer_test.go",
+        "calloc_test.go",
+        "rtutil_test.go",
+        "z_test.go",
+    ],
+    embed = [":go_default_library"],
+    deps = [
+        "@com_github_dgryski_go_farm//:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)
