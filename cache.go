@@ -201,6 +201,10 @@ func (c *Cache) Wait() {
 	wg.Wait()
 }
 
+func (c *Cache) GetAll(includeExpired bool) []StoreItem {
+	return c.store.GetAll(includeExpired)
+}
+
 // Get returns the value (if any) and a boolean representing whether the
 // value was found or not. The value can be nil and the boolean can be true at
 // the same time.
